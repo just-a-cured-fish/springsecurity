@@ -1,0 +1,644 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> javascript 文件夹相关操作.</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/fileinput.css" />
+    <link rel="stylesheet" href="css/tooltips.css" />
+    <link rel="stylesheet" href="css/folder.css" />
+    <link rel="stylesheet" href="css/simplepop.min.css" />
+    <link rel="stylesheet" href="css/k-all.css">
+    <link rel="stylesheet" href="css/upload.css">
+    <link rel="stylesheet" href="css/viewer.css">
+<style type="text/css">
+*{margin:0;padding:0;}
+.alldom{width:100%;height:100%;}
+#menu1{
+    width: 0; /*设置为0 隐藏自定义菜单*/
+    height: 125px;
+    overflow: hidden; /*隐藏溢出的元素*/
+    box-shadow: 0 1px 1px #888,1px 0 1px #ccc;
+    position: absolute; /*自定义菜单相对与body元素进行定位*/
+}
+#menu2{
+    width: 0; /*设置为0 隐藏自定义菜单*/
+    height: 125px;
+    overflow: hidden; /*隐藏溢出的元素*/
+    box-shadow: 0 1px 1px #888,1px 0 1px #ccc;
+    position: absolute; /*自定义菜单相对与body元素进行定位*/
+}
+.menu1{
+    width: 130px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 10px;
+}
+.menu2{
+    width: 130px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 10px;
+}
+ul{padding:0;list-style:none;}
+jpg{overflow:hidden;width:100px;height:115px;float:left;margin-left:55px;background:url(images/213125.png) center top no-repeat;border:1px solid #fff;position:relative;transition:all 0.2s ease-in 0.1s;}
+ul li{overflow:hidden;width:100px;height:115px;float:left;margin-left:55px;background:url(images/213125.png) center top no-repeat;border:1px solid #fff;position:relative;transition:all 0.2s ease-in 0.1s;}
+ul li.bgclocrc{background:url(images/213125.png) center top no-repeat #f1f2fd;border:1px solid #a7aae3;}
+input.changename{position:absolute;border-radius:0px;left:-25px;bottom:10px;overflow:hidden;width:98px;height:20px;color:#595c5f;line-height:20px;text-align:center;font-size:12px;z-index:0;border:none;}	
+input.changename:hover{background:none;color:#F33;}	
+input{width:88px;height:24px;line-height:20px;text-align:center;background:none;border:1px solid #CCC;border-radius:8px;transition:all 0.2s ease-in 0.1s;margin-left:25px;}
+input:hover{background:#09F;color:#fff;}
+.menu-zdy{width:120px;padding:4px;height:auto;background:#f8f8f8;border:1px solid #999;text-align:center;position:absolute;display:none;}
+.menu-zdy a{text-decoration:none;text-align:center;line-height:24px;font-family:'Microsoft YaHei';font-size:12px;color:#666;transition:all 0.2s ease-in 0.1s;}
+.menu-zdy .menu-one{padding:5px;width:100px;height:24px;border-bottom:1px dashed #FC0;}
+.menu-zdy .menu-two{padding:5px;width:100px;height:24px;border-bottom:1px dashed #FC0;}
+.menu-zdy a:hover{padding:3px 5px;color:#000;background:#fff;}
+.bottomdiv{
+height:150px;
+width:100%;
+bottom: 0;
+position: absolute;
+
+}
+
+a img{border:none;}
+
+#imageView_container{margin:0 auto;}
+#txtcontainer{margin:0 auto;}
+.container{margin:0 auto;}
+*{margin:0;padding:0;font-size:12px;font-family:Verdana, Geneva, sans-serif;line-height:14px}
+img{border:none;}
+a{color:#039}
+a:hover{color:#f60}
+/* pop */
+.pop{position:absolute;left:35%;top:18%;width:500px;height:500px;z-index:9999999999999999}
+.pop_head{position:relative;}
+.pop_head a.close{width:47px;height:46px;background:url(images/close.png);position:absolute;right:-23px;line-height:20px;color:#000;text-decoration:none;top:-23px;}
+.pop_body{padding:10px;background-color: navajowhite;width:480px;height:480px;overflow:hidden;}
+</style>
+
+</head>
+
+<body>
+
+
+<div id="clouddemo" >
+    <!--首先设置一个层:-->
+    <div id="pop" class="pop" style="display:none" v-show="txtshow==0">
+        <div class="pop_head"><a class="close" href="javascript:void(0);" onclick="hide()"></a></div>
+        <div class="pop_body " id="txtcontent"></div>
+
+    </div>
+
+    <!--弹出层的按钮:-->
+    <a  href="javascript:void(0);" onclick="show();"  @click="txtshow=1"style="display: none" id="txtbtn"><img src="btn.jpg" width="100" height="100" alt="" /></a>
+
+<!--    <div id="txtcontainer" class="container" v-show="txtshow==0">-->
+<!--        <h2></h2>-->
+<!--        <div class="article_content">-->
+<!--            <div id="txtcontent"></div>-->
+<!--        </div>-->
+<!--        <div class="readall_box" >-->
+<!--            <div class="read_more_mask"></div>-->
+<!--            <a class="read_more_btn" target="_self">阅读全文</a>-->
+<!--        </div>-->
+<!--        <button class="btn btn-info" @click="txtshow=1">关闭</button>-->
+<!--    </div>-->
+    <!--自定义右键菜单html代码-->
+    <div id="imageView_container" v-show="picshow==0">
+        <img id="imageView" src="images/image.png" rel="images/sad2.jpg" alt="" />
+        <button class="btn btn-info" @click="picshow=1">关闭</button>
+    </div>
+    <div class="navigation-bar">
+        <div class="forward-backward">
+            <button type="button" class="backward flipy-y btn-xs k-btn btn"
+                    title="后退" @click="reback"></button>
+            <button type="button" class="forward btn-xs k-btn btn" title="前进"></button>
+        </div>
+        <button type="button" class="home btn-xs k-btn btn" title="返回根目录" @click="toroot()"></button>
+        <button type="button" class="gotopre btn-xs k-btn btn" title="返回上级目录"></button>
+        <div class="folder-navigation" id="folder-navigation"></div>
+        <input type="text" class="navigation" id="navigation"
+               style="display: none;">
+    </div>
+<p style=" margin:10px auto; padding:10px 0; border-bottom:1px solid #666;">
+    <input type="submit" value="创建新文件夹" class="carrynews" @click="createdir()"/>
+    <input type="submit" value="清空文件夹" class="removeall"/><input type="submit" value="上传文件" class="remove" id="removebutton" @click="upload()"/>
+    &nbsp; &nbsp; &nbsp;
+    <select style="background-color:white;" id="selecttype" v-model="type">
+        <option style="background-color:white;" value="default">选择查看类型</option>
+        <option style="background-color:white;" value="image">只看图片</option>
+        <option style="background-color:white;" value="txt">只看txt</option>
+        <option style="background-color:white;" value="word">只看word</option>
+    </select>
+
+</p><br/>
+
+    <div  class="alldom">
+    <ul id="divall" v-for="node in  tree" >
+<!-- 如果是文件夹       <li  v-if="node.type.indexOf('directory') !== -1">-->
+<!--            <input type="text" class="changename" value="我的文件夹一" v-model="node.name" />-->
+<!--        </li>-->
+            <li  v-if="type=='default'||type==node.type||node.type=='Dir' " @dblclick="dbclickin(node)" @click="fileclick(node)"   v-bind:class="{ active: node.type=='Dir','file other-filetype': node.type=='txt','file docx ': node.type=='word' ,'file image':node.type=='image','file pdf':node.type=='pdf'}">
+                    <input type="text" name="filename" class="changename" value="我的文件夹一" v-model="node.name"  @blur="fileblur(node)"/>
+                </li>
+
+    </ul>
+
+
+</div>
+
+<div style=" clear:both;"></div>
+    <div id="menu1">
+        <div class="menu1" @click="deletefile()">删除文件</div>
+        <div class="menu1" @click="download()">下载</div>
+        <div class="menu1" @click="copy()">复制</div>
+        <div class="menu1" @click="precede()">预览</div>
+    </div>
+    <div id="menu2">
+        <div class="menu2" @click="paste()">粘贴</div>
+    </div>
+<div class="menu-zdy" id="menu">
+
+   <div class="menu-one">
+    <a href="#nogo" id="changename">修改文件夹名称</a>
+    </div>
+
+   <div class="menu-two">
+       <a href="#nogo" id="removethispc" @click="upload()">上传文件</a>
+   </div>
+   
+</div><img src="" id="hideImg" style="display: none;"/>
+
+    <input type="file" id="file" ref="file" @change="up()" style="display: none;"/>
+
+    <div class="bottomdiv">
+
+
+
+    <table class="table" >
+        <caption v-text="'文件数目:'+' '+tree.length">文件属性</caption>
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>路径</th>
+            <th>所属</th>
+            <th>类型</th>
+            <th>大小</th>
+            <th>上次修改时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr >
+            <td v-text="thisnode.name"></td>
+            <td v-text="thisnode.path"></td>
+            <td v-text="thisnode.owner"></td>
+            <td v-text="thisnode.type"></td>
+            <td  v-text="thisnode.len"></td>
+            <td v-text="thisnode.modifytime"></td>
+
+        </tr>
+
+        </tbody>
+    </table>
+
+
+</div>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/axios.js"></script>
+<script type="text/javascript" src="js/jq.js"></script>
+<script type="text/javascript" src="js/jquery.imageView.js"></script>
+<script type="text/javascript" src="js/pdfobject.js"></script>
+
+
+<script type="text/javascript">
+
+    var EX = {
+        addEvent:function(k,v){
+            var me = this;
+            if(me.addEventListener)
+                me.addEventListener(k, v, false);
+            else if(me.attachEvent)
+                me.attachEvent("on" + k, v);
+            else
+                me["on" + k] = v;
+        },
+        removeEvent:function(k,v){
+            var me = this;
+            if(me.removeEventListener)
+                me.removeEventListener(k, v, false);
+            else if(me.detachEvent)
+                me.detachEvent("on" + k, v);
+            else
+                me["on" + k] = null;
+        },
+        stop:function(evt){
+            evt = evt || window.event;
+            evt.stopPropagation?evt.stopPropagation():evt.cancelBubble=true;
+        }
+    };
+
+    document.getElementById('pop').onclick = EX.stop;
+    var url = '#';
+    function show(){
+        var o = document.getElementById('pop');
+        o.style.display = "";
+        setTimeout(function(){
+            EX.addEvent.call(document,'click',hide);
+        });
+    }
+    function hide(){
+        var o = document.getElementById('pop');
+        o.style.display = "none";
+        EX.removeEvent.call(document,'click',hide);
+    }
+    // $(function() {
+    //     $('#imageView_container').imageView({width:850, height:708});
+    // });
+
+    var clickdocu;
+    window.oncontextmenu=function(e){
+//取消默认的浏览器自带右键 很重要！！
+        e.preventDefault();
+        clickdocu= e.target;
+        if(clickdocu.tagName=="LI") {
+//获取我们自定义的右键菜单
+            var menu = document.querySelector("#menu1");
+//根据事件对象中鼠标点击的位置，进行定位
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+//改变自定义菜单的宽，让它显示出来
+            menu.style.width = '125px';
+        }else{
+            var menu = document.querySelector("#menu2");
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+//改变自定义菜单的宽，让它显示出来
+            menu.style.width = '75px';
+        }
+    }
+    //关闭右键菜单，很简单
+    window.onclick=function(e){
+
+//用户触发click事件就可以关闭了，因为绑定在window上，按事件冒泡处理，不会影响菜单的功能
+        document.querySelector('#menu1').style.width=0;
+        document.querySelector('#menu2').style.width=0;
+    }
+
+
+    var vm=new Vue({
+        el:'#clouddemo',
+        data:{
+            tree:[],
+            alltree:[],
+            thisnode:[],
+            stack:[],
+            nowaddress:'/',
+            alllen:0,
+            user:'',
+            copyfile:'',
+            type:'default',
+            picshow:1,
+            txtshow:1
+
+        },
+        methods:{
+            <!--双击点进去的时间-->
+            dbclickin:function(node){
+                <!-- 如果是-1代表是文件-->
+                if(node.type!='Dir'){return;}
+                this.nowaddress= this.nowaddress+"/"+node.name;
+                console.log(node.name);
+                axios.all([getnowPath(this.nowaddress)]).then(axios.spread((fn1)=>{
+                    this.tree=fn1.data;
+                    for(var i=0;i<this.tree.length;i++){
+                        if(this.tree[i].type!='Dir'){
+                            this.tree[i].type=getFileType(this.tree[i].type);
+                            console.log(this.tree[i].type);
+                        }
+                    }
+                }));
+
+            },
+
+            fileclick:function(node){
+                this.thisnode=node;
+            },
+            precede:function(){
+                for(var i=0;i<this.tree.length;i++) {
+                    if (this.tree[i].name == clickdocu.firstChild.value) {
+                        var type=this.tree[i].type;
+                        let redirectUrltxt = this.tree[i].path;
+                        let redirectUrl = encodeURIComponent(this.tree[i].path);
+                        if(type=='Dir'){retrurn;}
+                        else if(type=='image'){
+                            $('#imageView').attr("src","../file/precede?path="+redirectUrl);
+                            $('#imageView_container').imageView({width:800, height:700});
+                            this.picshow=0;
+                        }else if(type=='txt'){
+
+                            axios.all([pretxt(redirectUrltxt,0)]).then(axios.spread((fn1)=>{
+                                console.log(fn1.data.content);
+                                var oDiv=document.getElementById("txtcontent");
+
+
+                               // var txt =document.createTextNode(fn1.data.content);
+                                $('#txtcontent').append(fn1.data.content);
+
+                                $('#txtbtn').click();
+                            }));
+                            this.txtshow=0;
+                        }else  {
+                            let a = document.createElement('a');
+                            a.href = "../file/precede?path=" + redirectUrl;
+                            console.log(redirectUrl);
+                            a.click();
+                        }
+                        break;
+
+                    }
+                }
+
+            },
+            copy:function(){
+                for(var i=0;i<this.tree.length;i++){
+                    if(this.tree[i].name==clickdocu.firstChild.value) {
+                        this.copyfile = this.tree[i];
+                    }
+                }
+            },
+            paste:function(){
+                if(this.copyfile.path==null){return;}
+                console.log(this.copyfile.path);
+                console.log(this.nowaddress);
+                axios.all([move(this.copyfile.path,this.nowaddress)]).then(axios.spread((fn1)=>{
+                        this.tree.push(this.copyfile);
+                     this.copyfile=[];
+                }));
+
+            },
+            download:function(){
+                var path;
+                for(var i=0;i<this.tree.length;i++){
+                    if(this.tree[i].name==clickdocu.firstChild.value){
+                        path=this.tree[i].path;
+                        break;
+                    }
+                }
+
+                let a = document.createElement('a')
+               a.href ="/file/down?path="+path;
+               a.click();
+
+            },
+            upload:function(){
+                document.getElementById("file").click();
+                var localpath=document.getElementById("file").value;
+                console.log(localpath);
+            },
+            deletefile:function(){
+
+                for(var i=0;i<this.tree.length;i++){
+                    if(this.tree[i].name==clickdocu.firstChild.value){
+                        axios.all([deletedom(this.tree[i].path)]).then(axios.spread((fn1)=>{
+                          var dom=this.tree[i];
+                            this.tree.splice(i,1);
+
+                        }));
+                        break;
+                    }
+
+                }
+
+            },
+            up(){
+                var that = this;
+                // 获取到this 赋值个that
+                var file = this.$refs.file.files[0];
+
+                if(!file){return} // 如果没有文件就返回
+                // 拿到上传的文件
+                var data = new FormData();
+                // 创建一个表单数据
+                data.append("file",file);
+                data.append("path",this.nowaddress);
+                // 把图片或文件添加到data
+                axios.post(
+                    "../file/upload",
+                    data,
+                    // 第1个参数 url 第二参数 data数据，第三个是配置渲染，
+                    // onUploadProgress 当上传进度是
+                    {onUploadProgress:e=>{
+
+                            that.pre =Math.floor(e.loaded/e.total*100);
+                            // e.loaded 已经上传的字节数据，e.total 字节数据  转换为1-100的比例值 赋值个pre
+                        }}
+                ).then(res=>{
+                        console.log(res);
+                        if(res.data.code!=-1){
+                            this.tree.push(res.data.data);
+                        }
+                    })
+
+            },
+            createdir:function(){
+                var len=this.tree.length;
+                var name="新建文件夹";
+                var count=1;
+                for(var i=0;i<len;i++){
+                    if(this.tree[i].name==name+count){
+                        i=0;
+                        count++;
+                    }
+                }
+                axios.all([mkdir(this.nowaddress+"/"+name+count)]).then(axios.spread((fn1)=>{
+                        this.tree.push(fn1.data);
+                }));
+
+
+            },
+            toroot:function () {
+                this.nowaddress="/"+this.user;
+                axios.all([getnowPath(this.nowaddress)]).then(axios.spread((fn1)=>{
+                    this.tree=fn1.data;
+                }));
+            },
+            <!-- 回退-->
+            reback:function () {
+
+                this.nowaddress= this.nowaddress.substring(0,this.nowaddress.lastIndexOf("/"));
+                if(this.nowaddress.indexOf("/"+this.user)==-1){
+                    this.nowaddress="/"+this.user;
+                    return ;
+                }
+                console.log( this.nowaddress);
+                axios.all([getnowPath(this.nowaddress)]).then(axios.spread((fn1)=>{
+                    this.tree=fn1.data;
+                    for(var i=0;i<this.tree.length;i++){
+                        if(this.tree[i].type!='Dir'){
+                            this.tree[i].type=getFileType(this.tree[i].type);
+                            console.log(this.tree[i].type);
+                        }
+                    }
+                }));
+            },
+            fileblur:function(node){
+                    console.log(node.path);
+                    console.log(node.name);
+                    if(node.path.substring(node.path.lastIndexOf("/"))!=node.name){
+                        axios.all([rename(node.path,node.name)]).then(axios.spread((fn1)=>{
+                            console.log(fn1.data);
+                        }));
+                    }
+            }
+
+        },
+        mounted:function(){
+            //页面加载完成后
+            axios.all([getUser()]).then(axios.spread((fn1)=>{
+                this.user=fn1.data;
+                this.nowaddress=this.nowaddress+fn1.data;
+                console.log(fn1.data);
+                axios.all([getnowPath(this.nowaddress)]).then(axios.spread((fn1)=>{
+                    this.tree=fn1.data;
+                    console.log(fn1.data);
+                }));
+            }));
+
+        }
+    });
+
+    function getUser(){
+        return axios.get("../file/getuser");
+    }
+    function getnowPath(path){
+        console.log("path"+path);
+        return axios.get("../file/getPath?path="+path);
+    }
+    function mkdir(path){
+
+        return axios.get("../file/mkdir?path="+path);
+    }
+    function deletedom(path){
+
+        return axios.get("../file/delete?path="+path);
+    }
+    function getPath(){
+        return axios.get("../file/getroot");
+    }
+    function rename(path,name){
+        return axios({
+            url:'../file/rename',
+            method:'get',
+            params:{path:path,name:name}
+        });
+    }
+    function move(path,path2){
+        return axios({
+            url:'../file/move',
+            method:'get',
+            params:{path:path,path2:path2}
+        });
+    }
+    function getFileType(fileName) {
+        // 后缀获取
+        let suffix = '';
+        // 获取类型结果
+        let result = '';
+        try {
+            const flieArr = fileName.split('.');
+            suffix = flieArr[flieArr.length - 1];
+        } catch (err) {
+            suffix = '';
+        }
+        // fileName无后缀返回 false
+        if (!suffix) { return false; }
+        suffix = suffix.toLocaleLowerCase();
+        // 图片格式
+        const imglist = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
+        // 进行图片匹配
+        result = imglist.find(item => item === suffix);
+        if (result) {
+            return 'image';
+        }
+        // 匹配txt
+        const txtlist = ['txt'];
+        result = txtlist.find(item => item === suffix);
+        if (result) {
+            return 'txt';
+        }
+        // 匹配 excel
+        const excelist = ['xls', 'xlsx'];
+        result = excelist.find(item => item === suffix);
+        if (result) {
+            return 'excel';
+        }
+        // 匹配 word
+        const wordlist = ['doc', 'docx'];
+        result = wordlist.find(item => item === suffix);
+        if (result) {
+            return 'word';
+        }
+        // 匹配 pdf
+        const pdflist = ['pdf'];
+        result = pdflist.find(item => item === suffix);
+        if (result) {
+            return 'pdf';
+        }
+        // 匹配 ppt
+        const pptlist = ['ppt', 'pptx'];
+        result = pptlist.find(item => item === suffix);
+        if (result) {
+            return 'ppt';
+        }
+        // 匹配 视频
+        const videolist = ['mp4', 'm2v', 'mkv', 'rmvb', 'wmv', 'avi', 'flv', 'mov', 'm4v'];
+        result = videolist.find(item => item === suffix);
+        if (result) {
+            return 'video';
+        }
+        // 匹配 音频
+        const radiolist = ['mp3', 'wav', 'wmv'];
+        result = radiolist.find(item => item === suffix);
+        if (result) {
+            return 'radio';
+        }
+        // 其他 文件类型
+        return 'other';
+    }
+    function uploadfile(path,localpath){
+        return axios({
+            url:'../file/upload',
+            method:'get',
+            params:{path:path,localpath:localpath}
+        });
+    }
+    function pretxt(path,count){
+        return axios({
+            url:'../file/gettxt',
+            method:'get',
+            params:{path:path,count:count}
+        });
+    }
+    function downloadfile(path){
+        return axios({
+            url:'../file/down',
+            method:'post',
+            responseType: 'blob',
+            params:{path:path}
+        });
+    }
+    function showImg(url){
+        document.getElementById('hideImg').src='img/2.jpg';
+        var image = new Viewer(document.getElementById('hideImg'),{
+            url: 'data-original'
+        });
+        document.getElementById('hideImg').click();
+    }
+
+
+</script>
+</html>

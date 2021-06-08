@@ -1,0 +1,19 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+  port: 8080
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/hdfs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Hongkong
+    username: root
+    password: a
+    driver-class-name: com.mysql.cj.jdbc.Driver
+hdfs:
+  path: hdfs://node1:9000
+  username: root

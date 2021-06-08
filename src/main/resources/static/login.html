@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="vueapp">
+<h3>表单登录</h3>
+<form action="/authentication/form" method="post">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" name="username" v-model="username"></td>
+        </tr>
+        <tr>
+            <td>密码:</td>
+            <td><input type="password" name="password" v-model="userpwd"></td>
+        </tr>
+        <tr>
+            <td>图形验证码:</td>
+            <td>
+                <input type="text" name="imageCode">
+                <img src="/code/image">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">登录</button></td>
+            <td colspan="2"><button  type="button" @click="sign">登录</button></td>
+        </tr>
+    </table>
+</form>
+</div>
+<!--    <form action="/user/login" method="post">-->
+<!--        用户名: <input type="text" name="username"/>-->
+<!--        <br/>-->
+<!--        密码:<input type="text" name="password"/>-->
+<!--        <br/>-->
+<!--        <input type="submit" value="login">-->
+<!--    </form>-->
+</body>
+<script src="js/jquery.min.js" ></script>
+<script src="js/vue.js" ></script>
+<script src="js/axios.js" ></script>
+<script>
+
+    var vm=new Vue({
+        el:'#vueapp',
+        data:{
+            username:'',
+            userpwd:''
+        },
+        methods:{
+
+            <!--双击点进去的时间-->
+            sign:function(){
+                console.log(this.username);
+               axios({
+                    url:'../users/sign',
+                    method:'get',
+                    params:{uname:this.username,upwd:this.userpwd}
+                }).then((response) => {
+                    console.log(response.data);
+                    if(response.data.code==1){
+                        alert("注册成功")
+                    }
+                });
+                <!-- 如果是-1代表是文件-->
+
+            }
+
+
+
+        },
+        mounted:function(){
+
+        }
+    });
+    function signin(){
+
+        return axios({
+            url:'../users/sign',
+            method:'get',
+            params:{uname:this.username,upwd:this.userpwd}
+        });
+    }
+</script>
+</html>
